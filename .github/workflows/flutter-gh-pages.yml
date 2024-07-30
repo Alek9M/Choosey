@@ -20,9 +20,12 @@ jobs:
       - uses: bluefireteam/flutter-gh-pages@v7
         with:
           # baseHref: /choosey/
-          customArgs: --dart-define="CLIENT_ID==${{ secrets.CLIENT_ID }}"
+          customArgs: >
+            --dart-define="CLIENT_ID=${{ secrets.CLIENT_ID }}" 
+            --dart-define="GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}"
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: build/web
+          force_orphan: true
