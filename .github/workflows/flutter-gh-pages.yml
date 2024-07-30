@@ -21,3 +21,8 @@ jobs:
         with:
           # baseHref: /choosey/
           customArgs: --dart-define="CLIENT_ID==${{ secrets.CLIENT_ID }}"
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/web
