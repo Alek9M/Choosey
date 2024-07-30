@@ -12,10 +12,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: 'stable'
+
+      - name: Verify Flutter installation
+        run: flutter --version
 
       - name: Install dependencies
         run: flutter pub get
@@ -33,5 +36,4 @@ jobs:
           force_orphan: true  # This creates a single-commit history on gh-pages branch
 
       - name: Verify deployment
-        run: |
-          echo "Deployment completed. Please check https://choosey.quest in a few minutes."
+        run: echo "Deployment completed. Please check https://choosey.quest in a few minutes."
