@@ -13,5 +13,5 @@ jobs:
       - uses: subosito/flutter-action@v2
       - uses: bluefireteam/flutter-gh-pages@v7
         with:
-          baseHref: /Choosey/
+          baseHref: /choosey/
           customArgs: --dart-define="CLIENT_ID==${{ secrets.CLIENT_ID }}"
