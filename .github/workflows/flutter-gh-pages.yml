@@ -11,6 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
+      - name: Ensure build directory exists
+        run: mkdir -p build/web
       - name: Create CNAME file
         run: touch build/web/CNAME
       - name: Fill CNAME file
