@@ -84,35 +84,36 @@ class _SignInState extends State<SignIn> {
 
   Widget _buildBody() {
     final GoogleSignInAccount? user = _currentUser;
-    if (_isAuthorized) {
-      return Profile(user: user!);
-      //   Column(
-      //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-      //   children: <Widget>[
-      //     ListTile(
-      //       leading: GoogleUserCircleAvatar(
-      //         identity: user,
-      //       ),
-      //       title: Text(user.displayName ?? ''),
-      //       subtitle: Text(user.email),
-      //     ),
-      //     const Text('Signed in successfully.'),
-      //     if (_isAuthorized) ...<Widget>[
-      //       Text(_contactText),
-      //     ],
-      //     if (!_isAuthorized) ...<Widget>[
-      //       const Text('Additional permissions needed.'),
-      //       ElevatedButton(
-      //         onPressed: _handleAuthorizeScopes,
-      //         child: const Text('REQUEST PERMISSIONS'),
-      //       ),
-      //     ],
-      //     ElevatedButton(
-      //       onPressed: _handleSignOut,
-      //       child: const Text('SIGN OUT'),
-      //     ),
-      //   ],
-      // );
+    if (user != null) {
+      // return
+        // Profile(user: user!);
+        return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          ListTile(
+            leading: GoogleUserCircleAvatar(
+              identity: user,
+            ),
+            title: Text(user.displayName ?? ''),
+            subtitle: Text(user.email),
+          ),
+          const Text('Signed in successfully.'),
+          if (_isAuthorized) ...<Widget>[
+            Text("_contactText"),
+          ],
+          if (!_isAuthorized) ...<Widget>[
+            const Text('Additional permissions needed.'),
+            ElevatedButton(
+              onPressed: _handleAuthorizeScopes,
+              child: const Text('REQUEST PERMISSIONS'),
+            ),
+          ],
+          ElevatedButton(
+            onPressed: _handleSignOut,
+            child: const Text('SIGN OUT'),
+          ),
+        ],
+      );
     } else {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
