@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:choosey/profile.dart';
 import 'package:choosey/secrets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -28,14 +29,14 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   GoogleSignInAccount? _currentUser;
   bool _isAuthorized = false;
-  String _contactText = '';
 
   @override
   void initState() {
     super.initState();
-    log(googleClientId);
     _googleSignIn.onCurrentUserChanged
         .listen((GoogleSignInAccount? account) async {
+          print("Listening");
+
       bool isAuthorized =
           account != null && await _googleSignIn.canAccessScopes(scopes);
 
@@ -43,6 +44,7 @@ class _SignInState extends State<SignIn> {
         _currentUser = account;
         _isAuthorized = isAuthorized;
       });
+      print("Set state");
 
       // if (isAuthorized) {
       // }
@@ -82,34 +84,35 @@ class _SignInState extends State<SignIn> {
 
   Widget _buildBody() {
     final GoogleSignInAccount? user = _currentUser;
-    if (user != null) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          ListTile(
-            leading: GoogleUserCircleAvatar(
-              identity: user,
-            ),
-            title: Text(user.displayName ?? ''),
-            subtitle: Text(user.email),
-          ),
-          const Text('Signed in successfully.'),
-          if (_isAuthorized) ...<Widget>[
-            Text(_contactText),
-          ],
-          if (!_isAuthorized) ...<Widget>[
-            const Text('Additional permissions needed.'),
-            ElevatedButton(
-              onPressed: _handleAuthorizeScopes,
-              child: const Text('REQUEST PERMISSIONS'),
-            ),
-          ],
-          ElevatedButton(
-            onPressed: _handleSignOut,
-            child: const Text('SIGN OUT'),
-          ),
-        ],
-      );
+    if (_isAuthorized) {
+      return Profile(user: user!);
+      //   Column(
+      //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+      //   children: <Widget>[
+      //     ListTile(
+      //       leading: GoogleUserCircleAvatar(
+      //         identity: user,
+      //       ),
+      //       title: Text(user.displayName ?? ''),
+      //       subtitle: Text(user.email),
+      //     ),
+      //     const Text('Signed in successfully.'),
+      //     if (_isAuthorized) ...<Widget>[
+      //       Text(_contactText),
+      //     ],
+      //     if (!_isAuthorized) ...<Widget>[
+      //       const Text('Additional permissions needed.'),
+      //       ElevatedButton(
+      //         onPressed: _handleAuthorizeScopes,
+      //         child: const Text('REQUEST PERMISSIONS'),
+      //       ),
+      //     ],
+      //     ElevatedButton(
+      //       onPressed: _handleSignOut,
+      //       child: const Text('SIGN OUT'),
+      //     ),
+      //   ],
+      // );
     } else {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
