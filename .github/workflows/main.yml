@@ -19,7 +19,7 @@ jobs:
         # run: echo 'choosey.quest' > build/web/CNAME
       - uses: bluefireteam/flutter-gh-pages@v7
         with:
-          # baseHref: /choosey/
+          baseHref: /choosey/
           customArgs: --dart-define="CLIENT_ID==${{ secrets.CLIENT_ID }}"
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
