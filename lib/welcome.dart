@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:choosey/secrets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -8,10 +9,10 @@ const List<String> scopes = <String>[
   'email',
 ];
 
-String clientId = const String.fromEnvironment('CLIENT_ID');//dotenv.env['CLIENT_ID'],
+// String clientId = const String.fromEnvironment('CLIENT_ID');//dotenv.env['CLIENT_ID'],
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
-  clientId: clientId,
+  clientId: googleClientId,
   scopes: scopes,
 );
 
@@ -32,7 +33,7 @@ class _SignInState extends State<SignIn> {
   @override
   void initState() {
     super.initState();
-    log(clientId);
+    log(googleClientId);
     _googleSignIn.onCurrentUserChanged
         .listen((GoogleSignInAccount? account) async {
       bool isAuthorized =
