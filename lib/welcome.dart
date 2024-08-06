@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:developer';
-import 'package:choosey/profile.dart';
+import 'dart:convert' show json;
+import 'package:http/http.dart' as http;
 import 'package:choosey/secrets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -29,6 +29,7 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   GoogleSignInAccount? _currentUser;
   bool _isAuthorized = false;
+  String _contactText = '';
 
   @override
   void initState() {
@@ -46,8 +47,9 @@ class _SignInState extends State<SignIn> {
       });
       print("Set state");
 
-      // if (isAuthorized) {
-      // }
+      if (isAuthorized) {
+        unawaited(_handleGetContact(account));
+      }
     });
 
     _googleSignIn.signInSilently();
@@ -75,9 +77,60 @@ class _SignInState extends State<SignIn> {
     setState(() {
       _isAuthorized = isAuthorized;
     });
-    // if (isAuthorized) {
-    //   unawaited(_handleGetContact(_currentUser!));
-    // }
+    if (isAuthorized) {
+      unawaited(_handleGetContact(_currentUser!));
+    }
+  }
+
+  // Calls the People API REST endpoint for the signed-in user to retrieve information.
+  Future<void> _handleGetContact(GoogleSignInAccount user) async {
+    setState(() {
+      _contactText = 'Loading contact info...';
+    });
+    final http.Response response = await http.get(
+      Uri.parse('https://people.googleapis.com/v1/people/me/connections'
+          '?requestMask.includeField=person.names'),
+      headers: await user.authHeaders,
+    );
+    if (response.statusCode != 200) {
+      setState(() {
+        _contactText = 'People API gave a ${response.statusCode} '
+            'response. Check logs for details.';
+      });
+      print('People API ${response.statusCode} response: ${response.body}');
+      return;
+    }
+    final Map<String, dynamic> data =
+    json.decode(response.body) as Map<String, dynamic>;
+    final String? namedContact = _pickFirstNamedContact(data);
+    setState(() {
+      if (namedContact != null) {
+        _contactText = 'I see you know $namedContact!';
+      } else {
+        _contactText = 'No contacts to display.';
+      }
+    });
+  }
+
+  String? _pickFirstNamedContact(Map<String, dynamic> data) {
+    print(data);
+    final List<dynamic>? connections = data['connections'] as List<dynamic>?;
+    final Map<String, dynamic>? contact = connections?.firstWhere(
+          (dynamic contact) => (contact as Map<Object?, dynamic>)['names'] != null,
+      orElse: () => null,
+    ) as Map<String, dynamic>?;
+    if (contact != null) {
+      final List<dynamic> names = contact['names'] as List<dynamic>;
+      final Map<String, dynamic>? name = names.firstWhere(
+            (dynamic name) =>
+        (name as Map<Object?, dynamic>)['displayName'] != null,
+        orElse: () => null,
+      ) as Map<String, dynamic>?;
+      if (name != null) {
+        return name['displayName'] as String?;
+      }
+    }
+    return null;
   }
 
   Future<void> _handleSignOut() => _googleSignIn.disconnect();
