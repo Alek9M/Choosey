@@ -9,6 +9,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 const List<String> scopes = <String>[
   'email',
   'https://www.googleapis.com/auth/contacts.readonly',
+  'https://www.googleapis.com/auth/userinfo.profile',
+  'https://www.googleapis.com/auth/userinfo.email',
+  'openid'
 ];
 
 // String clientId = const String.fromEnvironment('CLIENT_ID');//dotenv.env['CLIENT_ID'],
